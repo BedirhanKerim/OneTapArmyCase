@@ -15,6 +15,7 @@ namespace OneTapArmyCore
             if (isEnemy)
             {
                 EnemySoldiers.Add(soldier);
+                GameManager.Instance.movementManager.MoveBaseQueue(soldier,true);
                 Debug.Log(soldier.name + " düşman listesine eklendi!");
             }
             else
@@ -27,6 +28,7 @@ namespace OneTapArmyCore
 
         public void RemoveSoldier(Soldier soldier, bool isEnemy)
         {
+            Debug.Log("remove");
             if (isEnemy)
             {
                 EnemySoldiers.Remove(soldier);

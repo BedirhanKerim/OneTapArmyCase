@@ -14,7 +14,17 @@ namespace OneTapArmyCore
             Walking,
             Charging,
             Attacking
+        }
 
+        public enum TeamType
+        {
+            Player,
+            Enemy
+        }
+        public enum SoldierType
+        {
+            Melee,
+            Range
         }
     }
 }

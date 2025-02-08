@@ -10,9 +10,13 @@ namespace OneTapArmyCore
     {  
         [SerializeField]private Rigidbody rb;
         public SoldierBehaviourState soldierBehaviour;
+        public SoldierAttack soldierAttack;
         public Vector3 targetLocation;
         public bool movementIsDone;
-        
+        public TeamType teamType;
+        private float rangeBetweentarget;
+        [SerializeField] private Animator animator;
+        [SerializeField] private Transform targetEnemySoldier;
         void FixedUpdate()
         {
             Move();
@@ -23,7 +27,6 @@ namespace OneTapArmyCore
             targetLocation = targetLoc;
             movementIsDone = false;
             soldierBehaviour = SoldierBehaviourState.Walking;
-            GameManager.Instance.movementManager.totalWaitingSoldier = 0;
         }
         public void SetMovementBaseData(Vector3 targetLoc)
         {
@@ -32,53 +35,55 @@ namespace OneTapArmyCore
             soldierBehaviour = SoldierBehaviourState.WaitingOnBase;
         }
         public void Move()
-        {
+        {    
+            Vector3 direction = Vector3.zero;
+                     Quaternion targetRotation;
             if (movementIsDone)
             {
-                rb.velocity=Vector3.zero;
+
+
+                 if (teamType==TeamType.Player)
+                 {
+                     targetRotation = Quaternion.LookRotation(Vector3.forward);
+                    
+                 }
+                 else
+                 {
+                     targetRotation = Quaternion.LookRotation(Vector3.back);
+
+                 }
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 2 * Time.deltaTime);           
+               
                 return;
             }
-            Vector3 direction = Vector3.zero;
             float speed = 0f;
-            Quaternion targetRotation;
             Quaternion smoothedRotation;
-
-            if (rb.velocity.magnitude < 1f)
-            {
-              //  animator.SetBool("isWalk", false);
-                //animator.SetBool("isAttack",false);
-            }
-            else
-            {
-               // animator.SetBool("isWalk", true);
-            }
+//Debug.Log(rb.velocity.magnitude);
+           
             direction = (targetLocation - transform.position).normalized;
 
-            if (direction == Vector3.zero)
-            {
-                targetRotation = Quaternion.Euler(Vector3.one * Mathf.Epsilon);
-            }
-            else
+       
             {
                 targetRotation = Quaternion.LookRotation(direction);
             }
-            smoothedRotation = Quaternion.Lerp(rb.rotation, targetRotation, 8 * Time.fixedDeltaTime);
 
             if (soldierBehaviour==SoldierBehaviourState.Walking||
                 soldierBehaviour==SoldierBehaviourState.Waiting)
             {
                 direction.y = 0;
                 speed = 3f;
-                var distance=(rb.position - transform.position).sqrMagnitude;
+                var distance=(targetLocation - transform.position).sqrMagnitude;
                 Vector3 newPosition = Vector3.MoveTowards(rb.position, targetLocation, speed * Time.fixedDeltaTime);
                 rb.MovePosition(newPosition);
                 smoothedRotation = Quaternion.Lerp(rb.rotation, targetRotation, 5 * Time.fixedDeltaTime);
                 rb.MoveRotation(smoothedRotation);
+                animator.SetBool("isWalk", true);
 
-                    if (distance<.1f)
+                    if (distance<.001f)
                     {
-                        movementIsDone = false; // Hareketi durdur
-
+                        movementIsDone = true; // Hareketi durdur
+                        animator.SetBool("isWalk", false);
+                        animator.SetBool("isAttack",false);
                     }
                 
               
@@ -87,18 +92,112 @@ namespace OneTapArmyCore
             {
                 direction.y = 0;
                 speed = 3f;
-                var distance=(rb.position - transform.position).sqrMagnitude;
+                var distance=(targetLocation - transform.position).sqrMagnitude;
                 Vector3 newPosition = Vector3.MoveTowards(rb.position, targetLocation, speed * Time.fixedDeltaTime);
                 rb.MovePosition(newPosition);
                 smoothedRotation = Quaternion.Lerp(rb.rotation, targetRotation, 5 * Time.fixedDeltaTime);
                 rb.MoveRotation(smoothedRotation);
+                animator.SetBool("isWalk", true);
 
-                if (distance<.1f)
+              
+//                Debug.Log(distance);
+                if (distance<.001f)
                 {
-                    movementIsDone = false; // Hareketi durdur
-
+                    movementIsDone = true; // Hareketi durdur
+                    animator.SetBool("isWalk", false);
+                    animator.SetBool("isAttack",false);
                 }
             }
+            else if (soldierBehaviour == SoldierBehaviourState.Charging)
+            {
+                if (targetEnemySoldier != null)
+                {
+                    targetLocation = targetEnemySoldier.position;
+                    var distance=(targetLocation - transform.position).sqrMagnitude;
+
+                    direction.y = 0;
+                    speed = 3f;
+              
+
+                //animator.SetBool("isAttack", false);
+
+            /*    if (direction == Vector3.zero)
+                {
+                    targetRotation = Quaternion.Euler(Vector3.one * Mathf.Epsilon);
+                }
+                else
+                {
+                    targetRotation = Quaternion.LookRotation(direction);
+                }*/
+            Vector3 newPosition = Vector3.MoveTowards(rb.position, targetLocation, speed * Time.fixedDeltaTime);
+            rb.MovePosition(newPosition);
+                smoothedRotation = Quaternion.Lerp(rb.rotation, targetRotation, 5 * Time.fixedDeltaTime);
+                rb.MoveRotation(smoothedRotation);
+                animator.SetBool("isWalk", true);
+
+                if (distance<.01f)
+                {
+                    movementIsDone = true; // Hareketi durdur
+                    animator.SetBool("isWalk", false);
+                   // animator.SetBool("isAttack",true);
+                }  }
+            }
+            else if (soldierBehaviour == SoldierBehaviourState.Attacking)
+            {
+                rb.velocity = Vector3.zero;
+                animator.SetBool("isAttack", true);
+                if (targetEnemySoldier != null)
+                {
+                    direction = (targetEnemySoldier.position - transform.position).normalized;
+                    direction.y = 0;
+                }
+
+                if (direction == Vector3.zero)
+                {
+                    targetRotation = Quaternion.Euler(Vector3.one * Mathf.Epsilon);
+                }
+                else
+                {
+                    targetRotation = Quaternion.LookRotation(direction);
+                }
+
+                smoothedRotation = Quaternion.Lerp(rb.rotation, targetRotation, 5 * Time.fixedDeltaTime);
+                rb.MoveRotation(smoothedRotation);
+
+                return; // Attacking durumunda başka işlem yapmıyoruz
+            }
         }
+        
+        public void GetTargetTransform(Transform target, float distanceValue,IDamagable damagableRef)
+        {
+            rangeBetweentarget = distanceValue;
+            targetEnemySoldier = target;
+
+            if (target != null)
+            {
+                if (distanceValue < soldierAttack.range)
+                {
+                    //mySoldierAttack.targetSoldier = target.GetComponent<IDamagable>();
+                    soldierAttack.targetSoldier = damagableRef;
+
+                   soldierAttack.CheckRange(distanceValue);
+                   soldierBehaviour = SoldierBehaviourState.Attacking;
+                }
+                else
+                {
+                    soldierBehaviour = SoldierBehaviourState.Charging;
+                    movementIsDone = false; 
+                }
+            }
+            else
+            {
+               // animator.SetBool("isAttack", false);
+               soldierBehaviour = SoldierBehaviourState.Waiting;
+            }
+        }
+        
+        
     }
+    
+    
 }

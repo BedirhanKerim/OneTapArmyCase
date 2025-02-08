@@ -8,7 +8,8 @@ namespace OneTapArmyCore
     {
         public Transform[] soldierPositionsObj; 
         public Transform[] soldierBasePositionsObj;
-        public int totalWaitingSoldier;
+        public Transform[] enemySoldierBasePositionsObj;
+        public int totalWaitingSoldier,totalWaitingSoldierEnemy;
         public void MovePlayerArmy()
         {
             int i = 0;
@@ -22,12 +23,16 @@ namespace OneTapArmyCore
                     i++;
 
             }
+            GameManager.Instance.movementManager.totalWaitingSoldier = 0;
+
         }
 
         public void MoveBaseQueue(Soldier soldier,bool isEnemy)
         {
             if (isEnemy)
             {
+                soldier.soldierMovement.SetMovementBaseData(enemySoldierBasePositionsObj[totalWaitingSoldierEnemy].position);
+                totalWaitingSoldierEnemy++;
             }
             else
             {

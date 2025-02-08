@@ -8,7 +8,7 @@ public class GameManager : Singleton<GameManager>
     public ArmyManager armyManager;
 
     public SpawnManager spawnManager;
-
+    public BulletManager bulletManager;
     public MovementManager movementManager;
     // Start is called before the first frame update
     void Start()

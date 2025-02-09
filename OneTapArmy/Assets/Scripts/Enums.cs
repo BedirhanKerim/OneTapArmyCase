@@ -21,10 +21,22 @@ namespace OneTapArmyCore
             Player,
             Enemy
         }
+
         public enum SoldierType
         {
             Melee,
             Range
+        }
+
+        public enum EUpgradeType
+        {
+            Empty,
+            Swordsman,
+            Warrior,
+            Horseman,
+            Archer,
+            Castle,
+            Giant
         }
     }
 }

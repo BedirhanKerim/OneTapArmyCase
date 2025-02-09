@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     public ArmyManager armyManager;
-
+    public UpgradeManager upgradeManager;
     public SpawnManager spawnManager;
     public BulletManager bulletManager;
     public MovementManager movementManager;

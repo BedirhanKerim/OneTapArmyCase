@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad5bb28f8010e0c45be9cd7e8f0873da, type: 3}
+  m_Name: WarriorUpgradeSO
+  m_EditorClassIdentifier: 
+  upgradeValues:
+  - upgradeImage: {fileID: 21300000, guid: ee4ac972edb208045873fa79d36b50f2, type: 3}
+    values:
+    - 5
+    - 5
+    - 5
+    valueTexts:
+    - HEALTH
+    - ATTACK
+    - SPEED
+  - upgradeImage: {fileID: 21300000, guid: 6b69ae26283c8ca44a996378acde1705, type: 3}
+    values:
+    - 10
+    - 10
+    - 10
+    valueTexts:
+    - HEALTH
+    - ATTACK
+    - SPEED
+  - upgradeImage: {fileID: 21300000, guid: 0d11dad7a4081824b8c4c12acdb9b4cf, type: 3}
+    values:
+    - 15
+    - 15
+    - 15
+    valueTexts:
+    - HEALTH
+    - ATTACK
+    - SPEED
+  - upgradeImage: {fileID: 21300000, guid: e386adf2e3400fe4e92ffd6aae157715, type: 3}
+    values:
+    - 20
+    - 20
+    - 20
+    valueTexts:
+    - HEALTH
+    - ATTACK
+    - SPEED
+  - upgradeImage: {fileID: 21300000, guid: a8acd2cddad3b374db8867eba430dd78, type: 3}
+    values:
+    - 25
+    - 25
+    - 25
+    valueTexts:
+    - HEALTH
+    - ATTACK
+    - SPEED

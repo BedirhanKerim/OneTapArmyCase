@@ -13,13 +13,18 @@ namespace OneTapArmyCore
         private bool bCanAttack = true;
         public AttackAnimHandler attackAnimHandler;
         [SerializeField] private Transform bulletSpawnLoc;
-        public float damage;
+        private float _baseDamage;
+        private float damage;
         private void Start()
         {
             attackAnimHandler.Attack += Attack;
 
         }
 
+        public void SetDamage(float extraBuffDamage)
+        {
+            damage = (extraBuffDamage / 100 * _baseDamage) + _baseDamage;
+        }
         public void CheckRange(float distance)
         {
             if (distance < range && bCanAttack)

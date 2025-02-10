@@ -7,7 +7,7 @@ public class BotManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating(nameof(MoveArmy),6f,6f);
+        InvokeRepeating(nameof(MoveArmy),15f,15f);
     }
 
     private void MoveArmy()

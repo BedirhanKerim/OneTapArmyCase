@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b107b89fcef1ce044ace90105d83fcd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseHp: 75
+  _baseHp: 70
   teamType: 0
   hpBar: {fileID: 8162748333992016386}
 --- !u!136 &4308307231648797249

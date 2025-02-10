@@ -48,7 +48,7 @@ namespace OneTapArmyCore
 
         private void Start()
         {
-            InvokeRepeating(nameof(BotSpawnCounterAdd), 20f, 20f);
+            InvokeRepeating(nameof(BotSpawnCounterAdd), 15f, 15f);
             //InvokeRepeating(nameof(SpawnEnemySoldier), 2f, 2f);
         }
 
@@ -119,14 +119,14 @@ namespace OneTapArmyCore
             spawnQueueCounterEnemy %= botSpawnUnitCounter;
             if (_spawnPrefabsEnemy[spawnQueueCounterEnemy].isTaken)
             {
-                var newSoldier = LeanPool.Spawn(_spawnPrefabsEnemy[spawnQueueCounterPlayer].GetSoldierPrefab());
+                var newSoldier = LeanPool.Spawn(_spawnPrefabsEnemy[spawnQueueCounterEnemy].GetSoldierPrefab());
                 newSoldier.transform.position = enemyspawnPoint.position;
                 var soldier = newSoldier.GetComponent<Soldier>();
                 GameManager.Instance.armyManager.AddSoldier(soldier, true);
             }
             else
             {
-                SpawnSoldier();
+                SpawnEnemySoldier();
             }
         }
 

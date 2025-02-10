@@ -1,18 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameEventManager : MonoBehaviour
+public class GameEventManager : Singleton<GameEventManager>
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public event Action<float, float> OnExperienceChanged;
 
-    // Update is called once per frame
-    void Update()
+    public  void OnOnExperienceChanged(float arg1, float arg2)
     {
-        
+        OnExperienceChanged?.Invoke(arg1, arg2);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +16,7 @@ namespace OneTapArmyCore
         [SerializeField] public InGameUpgradeUnit[] inGameUpgradeUnits;
         [SerializeField] private GameObject upgradePanel;
         [SerializeField] private Sprite emptyStarSprite,fillStarSprite;
-        
+        private bool _firstPanel = false,_isPanelOpen=false;
         [Serializable]
         public class InGameUpgrade
         {
@@ -38,8 +39,20 @@ namespace OneTapArmyCore
             public Image[] stars = new Image[5];
         }
 
+        private void Start()
+        {
+            OpenUpgradePanel();
+        }
+
         public void OpenUpgradePanel()
         {
+            if (_isPanelOpen)
+            {
+                return;
+            }
+            Time.timeScale = 0f; // Zamanı durdur
+
+            _isPanelOpen = true;
             InGameUpgrade[] selectedBuffs = GetRandomBuffs();
             upgradePanel.SetActive(true);
             for (int i = 0; i < 3; i++)
@@ -73,7 +86,7 @@ namespace OneTapArmyCore
             {
                 upgradeUnit.stars[j].sprite=fillStarSprite;
             }
-            button.onClick.AddListener(() => LevelUpUpgrade(inGameUpgrade,inGameUpgrade));
+            button.onClick.AddListener(() => LevelUpUpgrade(inGameUpgrade));
         }
         private InGameUpgrade[] GetRandomBuffs()
         {
@@ -87,6 +100,11 @@ namespace OneTapArmyCore
                 }
             }
 
+            if (!_firstPanel)
+            {
+                _firstPanel = true;
+                list.Remove(inGameUpgrades[0]);
+            }
             if (list.Count<3)
             {
                 list.Add(list[0]);
@@ -97,13 +115,17 @@ namespace OneTapArmyCore
             return orderedArray;
         }
 
-        private void LevelUpUpgrade( InGameUpgrade inGameUpgrade,InGameUpgrade newUpgradeValue)
-        {
-            inGameUpgrade.level++;
+        private void LevelUpUpgrade( InGameUpgrade newUpgradeValue)
+        {            CleanAllButtons();
+
+            newUpgradeValue.level++;
+            GameManager.Instance.spawnManager.TakenSoldier(newUpgradeValue.inGameUpgradeType);
             //inGameUpgrade.
             switch (newUpgradeValue.inGameUpgradeType)
             {
                 case EUpgradeType.Castle:
+                    GameManager.Instance.playerBase.LevelUpCastle(newUpgradeValue.scriptableObj.upgradeValues[newUpgradeValue.level-1].values[0],newUpgradeValue.level);
+                    GameManager.Instance.spawnManager.LevelUp(newUpgradeValue.scriptableObj.upgradeValues[newUpgradeValue.level-1].values[1]);
                     break;
                 case EUpgradeType.Warrior:
                     break;
@@ -116,8 +138,9 @@ namespace OneTapArmyCore
                 case EUpgradeType.Giant:
                     break;
             }
+            _isPanelOpen = false;
+            Time.timeScale = 1f; // Zamanı durdur
 
-            CleanAllButtons();
         }
         
         
@@ -125,18 +148,30 @@ namespace OneTapArmyCore
         
         public void CleanAllButtons()
         {
-            Debug.Log("cleanallbutton");
             for (int i = 0; i < 3; i++)
             {
                 inGameUpgradeUnits[i].upgradeButton.onClick.RemoveAllListeners();
-                for (int j = 0; j < 5; j++)
-                {
-                    inGameUpgradeUnits[i].stars[j].sprite=emptyStarSprite;
-                }
+               
             }
-              upgradePanel.SetActive(false);
-           
+
+            upgradePanel.transform.DOScale(Vector3.zero, .5f)
+                .SetEase(Ease.InBack) // Daha doğal bir küçülme efekti
+                .OnComplete(() =>
+                {
+                    upgradePanel.SetActive(false);
+                    upgradePanel.transform.localScale = Vector3.one;
+                    for (int i = 0; i < 3; i++)
+                    {
+                        for (int j = 0; j < 5; j++)
+                        {
+                            inGameUpgradeUnits[i].stars[j].sprite=emptyStarSprite;
+                        }
+                    }
+                });
+
         }
+           
+        
 
         public float[] GetExtraSoldierBuffs(EUpgradeType buffType)
         {
@@ -147,7 +182,7 @@ namespace OneTapArmyCore
                 {
                     for (int j = 0; j < 3; j++)
                     {
-                        buffValues[j]=inGameUpgrades[i].scriptableObj.upgradeValues[inGameUpgrades[i].level].values[j];
+                        buffValues[j]=inGameUpgrades[i].scriptableObj.upgradeValues[inGameUpgrades[i].level-1].values[j];
 
                     }
 

@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e3fb8f4f0349dd4db81dcde0f0a75a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soldierType: 6
   soldierMovement: {fileID: 8345916618599817133}
   soldierAttack: {fileID: 8304934162894262871}
   soldierHealth: {fileID: 6060613205441314999}
@@ -126,6 +127,8 @@ MonoBehaviour:
   teamType: 0
   animator: {fileID: 8081088281087209998}
   targetEnemySoldier: {fileID: 0}
+  horseAnimator: {fileID: 0}
+  haveHorse: 0
 --- !u!114 &8304934162894262871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +145,7 @@ MonoBehaviour:
   range: 1
   attackAnimHandler: {fileID: 5890079572566784595}
   bulletSpawnLoc: {fileID: 0}
-  damage: 10
+  _baseDamage: 15
 --- !u!114 &6060613205441314999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,9 +158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b107b89fcef1ce044ace90105d83fcd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 0
-  currentHp: 0
+  _baseHp: 75
   teamType: 0
+  hpBar: {fileID: 8162748333992016386}
 --- !u!136 &4308307231648797249
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -243,7 +246,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1, y: 0.12}
+  m_SizeDelta: {x: 1, y: 0.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9207249158920750175
 CanvasRenderer:
@@ -309,7 +312,7 @@ Transform:
   m_GameObject: {fileID: 1655120527360577056}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.42, z: 0}
+  m_LocalPosition: {x: 0, y: 1.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -466,7 +469,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1, y: 0.12}
+  m_SizeDelta: {x: 1, y: 0.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6348984615400576934
 CanvasRenderer:
@@ -566,10 +569,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2895908093989664759, guid: f701a9d76e527fd49941c191318b21f0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 97856cd6ac009824e8a3f507fb75f1ad, type: 2}
+    - target: {fileID: -301024944411435851, guid: f701a9d76e527fd49941c191318b21f0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 97856cd6ac009824e8a3f507fb75f1ad, type: 2}
     - target: {fileID: 919132149155446097, guid: f701a9d76e527fd49941c191318b21f0, type: 3}
       propertyPath: m_Name
       value: Idle
       objectReference: {fileID: 0}
+    - target: {fileID: 1529763866839775115, guid: f701a9d76e527fd49941c191318b21f0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 97856cd6ac009824e8a3f507fb75f1ad, type: 2}
+    - target: {fileID: 2101931642186146361, guid: f701a9d76e527fd49941c191318b21f0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 97856cd6ac009824e8a3f507fb75f1ad, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

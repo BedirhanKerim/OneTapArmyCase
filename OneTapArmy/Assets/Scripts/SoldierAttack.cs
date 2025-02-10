@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static OneTapArmyCore.Enums;
+
 namespace OneTapArmyCore
 {
     public class SoldierAttack : MonoBehaviour
@@ -13,18 +14,24 @@ namespace OneTapArmyCore
         private bool bCanAttack = true;
         public AttackAnimHandler attackAnimHandler;
         [SerializeField] private Transform bulletSpawnLoc;
-        private float _baseDamage;
+        [SerializeField] private float _baseDamage;
         private float damage;
+
+        private void Awake()
+        {
+            damage = _baseDamage;
+        }
+
         private void Start()
         {
             attackAnimHandler.Attack += Attack;
-
         }
 
         public void SetDamage(float extraBuffDamage)
         {
             damage = (extraBuffDamage / 100 * _baseDamage) + _baseDamage;
         }
+
         public void CheckRange(float distance)
         {
             if (distance < range && bCanAttack)
@@ -34,13 +41,14 @@ namespace OneTapArmyCore
             else
             {
                 bCanAttack = false;
-
             }
         }
+
         public void Attack()
         {
-            if (!bCanAttack&&targetSoldier==null)
-            {return;
+            if (!bCanAttack && targetSoldier == null)
+            {
+                return;
             }
 
             switch (soldierType)
@@ -49,11 +57,10 @@ namespace OneTapArmyCore
                     targetSoldier.TakeDamage(damage);
                     break;
                 case SoldierType.Range:
-                  GameManager.Instance.bulletManager.SpawnBullet(bulletSpawnLoc.position, targetSoldier, damage);
+                    GameManager.Instance.bulletManager.SpawnBullet(bulletSpawnLoc.position, targetSoldier, damage);
                     break;
             }
             //audioSource.Play();
-
         }
     }
 }

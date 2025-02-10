@@ -9,88 +9,57 @@ namespace OneTapArmyCore
     public class TargetManager : MonoBehaviour
     {
         [SerializeField] private float soldierAggroMelee, soldierAggroRange;
+        [SerializeField] private Transform playerCastle, enemyCastle;
+         private IDamagable _playerCastleIDamagable, _enemyCastleIDamagable;
 
-        private void Update()
+         private void Start()
+         {
+             _playerCastleIDamagable = playerCastle.GetComponent<IDamagable>();
+             _enemyCastleIDamagable = enemyCastle.GetComponent<IDamagable>();
+
+         }
+
+         private void Update()
         {
             SetTargets();
         }
 
-        private void SetTargets()
-        {
-            var allies = GameManager.Instance.armyManager.MySoldiers;
-            var enemies = GameManager.Instance.armyManager.EnemySoldiers;
+         private void SetTargets()
+         {
+             AssignTargets(GameManager.Instance.armyManager.MySoldiers, enemyCastle, _enemyCastleIDamagable, GameManager.Instance.armyManager.EnemySoldiers);
+             AssignTargets(GameManager.Instance.armyManager.EnemySoldiers, playerCastle, _playerCastleIDamagable, GameManager.Instance.armyManager.MySoldiers);
+         }
 
-            foreach (Soldier mySoldier in allies)
-            {
-                Transform nearestEnemy = null;
-                IDamagable damagableRef=null;
+         private void AssignTargets(List<Soldier> soldiers, Transform castle, IDamagable castleDamagable, List<Soldier> enemies)
+         {
+             foreach (Soldier soldier in soldiers)
+             {
+                 Transform nearestEnemy = null;
+                 IDamagable damagableRef = null;
+                 float nearestDistance = (soldier.soldierAttack.soldierType == SoldierType.Melee) ? soldierAggroMelee : soldierAggroRange;
 
-                float nearestDistance = 100;
-                if (mySoldier.soldierAttack.soldierType == SoldierType.Melee)
-                {
-                    nearestDistance = soldierAggroMelee;
+                 float castleDistance = (castle.position - soldier.transform.position).sqrMagnitude;
+                 if (castleDistance < nearestDistance)
+                 {
+                     nearestDistance = castleDistance;
+                     nearestEnemy = castle;
+                     damagableRef = castleDamagable;
+                 }
 
-                }
-                else if (mySoldier.soldierAttack.soldierType == SoldierType.Range)
-                {
-                    nearestDistance = soldierAggroRange;
+                 foreach (Soldier enemy in enemies)
+                 {
+                     float enemyDistance = (enemy.transform.position - soldier.transform.position).sqrMagnitude;
+                     if (enemyDistance < nearestDistance)
+                     {
+                         nearestDistance = enemyDistance;
+                         nearestEnemy = enemy.transform;
+                         damagableRef = enemy.IDamagableRef;
+                     }
+                 }
 
-                }
+                 soldier.soldierMovement.GetTargetTransform(nearestEnemy, nearestDistance, damagableRef);
+             }
+         }
 
-                foreach (Soldier enemySoldier in enemies)
-                {
-                    float distanceForDrone =
-                        (enemySoldier.transform.position - mySoldier.transform.position).sqrMagnitude;
-
-                    if (distanceForDrone < nearestDistance)
-                    {
-                        nearestDistance = distanceForDrone;
-                        nearestEnemy = enemySoldier.transform;
-                        damagableRef = enemySoldier.IDamagableRef;
-
-                    }
-
-                }
-                mySoldier.soldierMovement.GetTargetTransform(nearestEnemy,nearestDistance,damagableRef);
-                
-            }
-            
-            
-            
-            foreach (Soldier mySoldier in enemies)
-            {
-                Transform nearestEnemy = null;
-                IDamagable damagableRef=null;
-                float nearestDistance = 100;
-                if (mySoldier.soldierAttack.soldierType == SoldierType.Melee)
-                {
-                    nearestDistance = soldierAggroMelee;
-
-                }
-                else if (mySoldier.soldierAttack.soldierType == SoldierType.Range)
-                {
-                    nearestDistance = soldierAggroRange;
-
-                }
-
-                foreach (Soldier enemySoldier in allies)
-                {
-                    float distanceForDrone =
-                        (enemySoldier.transform.position - mySoldier.transform.position).sqrMagnitude;
-
-                    if (distanceForDrone < nearestDistance)
-                    {
-                        nearestDistance = distanceForDrone;
-                        nearestEnemy = enemySoldier.transform;
-                        damagableRef = enemySoldier.IDamagableRef;
-                    }
-
-                }
-
-               
-                mySoldier.soldierMovement.GetTargetTransform(nearestEnemy,nearestDistance,damagableRef);
-                
-            }
-        }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Lean.Pool;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -74,7 +75,11 @@ public class Bullet : MonoBehaviour
 
        // var gO = this.gameObject;
        // PoolingManager.Instance.Despawn(ref gO);
-       Destroy(gameObject);
+       var gObj = this.gameObject;
+        LeanPool.Despawn(gObj);
+        gObj.SetActive(false);
+
+       //Destroy(gameObject);
     }
     public void SetBullet(IDamagable targetSoldier, float _damage)
     {

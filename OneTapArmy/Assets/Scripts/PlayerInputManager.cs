@@ -7,10 +7,8 @@ namespace OneTapArmyCore
 {
     public class PlayerInputManager : MonoBehaviour
     {
-        [SerializeField]
-        private Camera camera;
-        [SerializeField]
-        private MovementManager movementManager;
+        [SerializeField] private Camera camera;
+        [SerializeField] private MovementManager movementManager;
 
         public Transform armyLocatorObj;
 
@@ -21,7 +19,7 @@ namespace OneTapArmyCore
                 PointGround();
             }
         }
-        
+
         // Update is called once per frame
 
 
@@ -35,10 +33,8 @@ namespace OneTapArmyCore
                 {
                     Vector3 hitPosition = hit.point; // Çarpışma noktasını al
                     armyLocatorObj.position = new Vector3(hitPosition.x, armyLocatorObj.position.y, hitPosition.z);
-                    Debug.Log("Çarpılan Nokta: " + hitPosition);
                     movementManager.MovePlayerArmy();
                 }
-                
             }
         }
     }

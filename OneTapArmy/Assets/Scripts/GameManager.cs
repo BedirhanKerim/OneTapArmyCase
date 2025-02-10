@@ -10,15 +10,24 @@ public class GameManager : Singleton<GameManager>
     public SpawnManager spawnManager;
     public BulletManager bulletManager;
     public MovementManager movementManager;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public UIManager uIManager;
+    public Base playerBase;
+    private float _expCount=0,_requirementExp=5,_levelCount=1;
 
-    // Update is called once per frame
-    void Update()
+    public void AddExp(float gainedExp)
     {
+        _expCount += gainedExp;
+        if (_expCount>=_requirementExp)
+        {
+            _expCount -= _requirementExp;
+            _levelCount++;
+            _requirementExp += 10;
+            uIManager.SetUILevelValue(_levelCount);
+            upgradeManager.OpenUpgradePanel();
+
+        }
+        uIManager.SetUIExpValues(_expCount,_requirementExp);
+        GameEventManager.Instance.OnOnExperienceChanged(_expCount, _requirementExp);
         
     }
 }

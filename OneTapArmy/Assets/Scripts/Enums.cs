@@ -18,8 +18,9 @@ namespace OneTapArmyCore
 
         public enum TeamType
         {
-            Player,
-            Enemy
+            PlayerBlue,
+            EnemyRed,
+            EnemyYellow
         }
 
         public enum SoldierType

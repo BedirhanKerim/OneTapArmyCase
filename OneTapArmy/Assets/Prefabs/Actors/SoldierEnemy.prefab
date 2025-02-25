@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 4762762260922242558}
   - component: {fileID: 2935007002937586391}
   - component: {fileID: 8345916618599817133}
-  - component: {fileID: 3355700334196096689}
   - component: {fileID: 272464855246160242}
+  - component: {fileID: 2362548701894922925}
   - component: {fileID: 4308307231648797249}
   - component: {fileID: 5362485425928395587}
   m_Layer: 0
@@ -102,8 +102,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e3fb8f4f0349dd4db81dcde0f0a75a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soldierType: 0
   soldierMovement: {fileID: 8345916618599817133}
-  soldierAttack: {fileID: 3355700334196096689}
+  soldierAttack: {fileID: 2362548701894922925}
   soldierHealth: {fileID: 272464855246160242}
 --- !u!114 &8345916618599817133
 MonoBehaviour:
@@ -119,29 +120,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 5362485425928395587}
   soldierBehaviour: 0
-  soldierAttack: {fileID: 3355700334196096689}
+  soldierAttack: {fileID: 2362548701894922925}
   targetLocation: {x: 0, y: 0, z: 0}
   movementIsDone: 0
   teamType: 1
   animator: {fileID: 7667580883351872753}
   targetEnemySoldier: {fileID: 0}
---- !u!114 &3355700334196096689
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 486630639745659465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06f4fad680a29042908e1fa5d2d4174, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soldierType: 0
-  range: 1
-  attackAnimHandler: {fileID: 5608234694879541060}
-  bulletSpawnLoc: {fileID: 0}
-  damage: 0
+  horseAnimator: {fileID: 0}
+  haveHorse: 0
 --- !u!114 &272464855246160242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,9 +140,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b107b89fcef1ce044ace90105d83fcd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 10
-  currentHp: 0
+  _baseHp: 0
   teamType: 1
+  hpBar: {fileID: 0}
+--- !u!114 &2362548701894922925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 486630639745659465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c79783ac2f910ab4681d5f59a505c2d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 0
+  aggroRange: 0
+  attackAnimHandler: {fileID: 5608234694879541060}
+  _baseDamage: 0
 --- !u!136 &4308307231648797249
 CapsuleCollider:
   m_ObjectHideFlags: 0

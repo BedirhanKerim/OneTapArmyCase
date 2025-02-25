@@ -5,15 +5,22 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-    public ArmyManager armyManager;
-    public UpgradeManager upgradeManager;
-    public SpawnManager spawnManager;
-    public BulletManager bulletManager;
-    public MovementManager movementManager;
-    public UIManager uIManager;
-    public Base playerBase;
+   // public ParticleSpawner particleSpawner;
+   // public CoinSpawner coinSpawner;
+   // public VibrationManager vibrationManager;
+   // public ArmyManager armyManager;
+   // public UpgradeManager upgradeManager;
+   // public SpawnManager spawnManager;
+   // public BulletManager bulletManager;
+   // public MovementManager movementManager;
+   // public UIManager uIManager;
+   
+   
+   
+   
+    public Transform playerBase,enemyBase,enemyBase2;
     private float _expCount=0,_requirementExp=5,_levelCount=1;
-
+    private int _goldCount = 0;
     public void AddExp(float gainedExp)
     {
         _expCount += gainedExp;
@@ -22,12 +29,24 @@ public class GameManager : Singleton<GameManager>
             _expCount -= _requirementExp;
             _levelCount++;
             _requirementExp += 10;
-            uIManager.SetUILevelValue(_levelCount);
-            upgradeManager.OpenUpgradePanel();
+           // uIManager.SetUILevelValue(_levelCount);
+            GameEventManager.Instance.OnOnSetUILevelValue(_levelCount);
+           // upgradeManager.OpenUpgradePanel();
+            GameEventManager.Instance.OnOnOpenUpgradePanel();
 
         }
-        uIManager.SetUIExpValues(_expCount,_requirementExp);
+       // uIManager.SetUIExpValues(_expCount,_requirementExp);
         GameEventManager.Instance.OnOnExperienceChanged(_expCount, _requirementExp);
         
     }
+
+    public void AddGold(int goldValue)
+    {
+         _goldCount+=goldValue;
+         GameEventManager.Instance.OnOnSetGoldText(_goldCount);
+        // uIManager.SetGoldText(_goldCount);
+    }
+
+
+    
 }

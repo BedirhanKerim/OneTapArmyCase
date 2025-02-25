@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Lean.Pool;
@@ -9,15 +10,22 @@ namespace OneTapArmyCore
     {
         [SerializeField] private GameObject bulletPrefab;
 
-        public void SpawnBullet(Vector3 spawnPosition, IDamagable target, float damage)
+        private void Start()
+        {
+            GameEventManager.Instance.OnSpawnBullet += SpawnBullet;
+        }
 
+        public void SpawnBullet(Vector3 spawnPosition, IDamagable target, float damage,AudioSource audioSource)
         {
             if (target == null) return;
 
-
+            if (!target.IsAlive())return;
+           
             var instance = LeanPool.Spawn(bulletPrefab);
             instance.transform.position = spawnPosition;
             instance.GetComponent<Bullet>().SetBullet(target, damage);
+            audioSource.PlayOneShot(audioSource.clip);
+
         }
     }
 }

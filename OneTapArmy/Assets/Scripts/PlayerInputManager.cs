@@ -8,8 +8,8 @@ namespace OneTapArmyCore
     public class PlayerInputManager : MonoBehaviour
     {
         [SerializeField] private Camera camera;
-        [SerializeField] private MovementManager movementManager;
-
+      //  [SerializeField] private MovementManager movementManager;
+        [SerializeField] private ParticleSystem pointerParticle;
         public Transform armyLocatorObj;
 
         private void Update()
@@ -33,7 +33,10 @@ namespace OneTapArmyCore
                 {
                     Vector3 hitPosition = hit.point; // Çarpışma noktasını al
                     armyLocatorObj.position = new Vector3(hitPosition.x, armyLocatorObj.position.y, hitPosition.z);
-                    movementManager.MovePlayerArmy();
+                    pointerParticle.transform.position = hit.point;
+                    pointerParticle.Play();
+                   // movementManager.MovePlayerArmy();
+                    GameEventManager.Instance.OnOnMovePlayerArmy();
                 }
             }
         }

@@ -17,15 +17,19 @@ namespace OneTapArmyCore
 
         [SerializeField] private SpawnInfo[] _spawnPrefabs;
         [SerializeField] private SpawnInfo[] _spawnPrefabsEnemy;
+        [SerializeField] private SpawnInfo[] _spawnPrefabsEnemy2;
 
-        public Transform spawnPoint, enemyspawnPoint; // Spawnlanacak nokta
-        [SerializeField] private Image spawnProgressBarPlayer, spawnProgressBarEnemy;
+        public Transform spawnPoint, enemyspawnPoint,enemyspawnPoint2; // Spawnlanacak nokta
+        [SerializeField] private Image spawnProgressBarPlayer, spawnProgressBarEnemy,spawnProgressBarEnemy2;
         [SerializeField] private float spawnRateTimePlayer, spawnRateTimeEnemy;
         private float spawnTimerPlayer = 0f;
         private float spawnTimerEnemy = 0f;
+        private float spawnTimerEnemy2 = 0f;
         private int spawnQueueCounterPlayer = 0;
         private int spawnQueueCounterEnemy = 0;
+        private int spawnQueueCounterEnemy2 = 0;
         private int botSpawnUnitCounter = 1;
+        private bool enemyBaseAlive = true, enemyBaseAlive2 = true;
 
         [Serializable]
         public class SpawnInfo
@@ -50,6 +54,9 @@ namespace OneTapArmyCore
         {
             InvokeRepeating(nameof(BotSpawnCounterAdd), 15f, 15f);
             //InvokeRepeating(nameof(SpawnEnemySoldier), 2f, 2f);
+            GameEventManager.Instance.OnStopSpawn += StopSpawn;
+            GameEventManager.Instance.OnLevelUpBonusSpawnRateValue += LevelUp;
+            GameEventManager.Instance.OnTakenSoldier += TakenSoldier;
         }
 
         private void Update()
@@ -58,6 +65,7 @@ namespace OneTapArmyCore
             spawnTimerEnemy += Time.deltaTime;
             spawnProgressBarPlayer.fillAmount = spawnTimerPlayer / spawnRateTimePlayer;
             spawnProgressBarEnemy.fillAmount = spawnTimerEnemy / spawnRateTimeEnemy;
+            spawnProgressBarEnemy2.fillAmount = spawnTimerEnemy / spawnRateTimeEnemy;
 
             if (spawnTimerPlayer >= spawnRateTimePlayer)
             {
@@ -68,7 +76,16 @@ namespace OneTapArmyCore
             if (spawnTimerEnemy >= spawnRateTimeEnemy)
             {
                 spawnTimerEnemy = 0;
-                SpawnEnemySoldier();
+                if (enemyBaseAlive)
+                {
+                    SpawnEnemySoldier();
+                }
+
+                if (enemyBaseAlive2)
+                {
+                    SpawnEnemySoldier2();
+                }
+
             }
         }
 
@@ -105,7 +122,8 @@ namespace OneTapArmyCore
                 var newSoldier = LeanPool.Spawn(_spawnPrefabs[spawnQueueCounterPlayer].GetSoldierPrefab());
                 newSoldier.transform.position = spawnPoint.position;
                 var soldier = newSoldier.GetComponent<Soldier>();
-                GameManager.Instance.armyManager.AddSoldier(soldier, false);
+                //GameManager.Instance.armyManager.AddSoldier(soldier, 0);
+                GameEventManager.Instance.OnOnAddSoldier(soldier,0);
             }
             else
             {
@@ -122,14 +140,50 @@ namespace OneTapArmyCore
                 var newSoldier = LeanPool.Spawn(_spawnPrefabsEnemy[spawnQueueCounterEnemy].GetSoldierPrefab());
                 newSoldier.transform.position = enemyspawnPoint.position;
                 var soldier = newSoldier.GetComponent<Soldier>();
-                GameManager.Instance.armyManager.AddSoldier(soldier, true);
+               // GameManager.Instance.armyManager.AddSoldier(soldier, 1);
+                GameEventManager.Instance.OnOnAddSoldier(soldier,1);
+
             }
             else
             {
                 SpawnEnemySoldier();
             }
         }
+        public void SpawnEnemySoldier2()
+        {
+            spawnQueueCounterEnemy2++;
+            spawnQueueCounterEnemy2 %= botSpawnUnitCounter;
+            if (_spawnPrefabsEnemy2[spawnQueueCounterEnemy2].isTaken)
+            {
+                var newSoldier = LeanPool.Spawn(_spawnPrefabsEnemy2[spawnQueueCounterEnemy2].GetSoldierPrefab());
+                newSoldier.transform.position = enemyspawnPoint2.position;
+                var soldier = newSoldier.GetComponent<Soldier>();
+               // GameManager.Instance.armyManager.AddSoldier(soldier, 2);
+                GameEventManager.Instance.OnOnAddSoldier(soldier,2);
 
+            }
+            else
+            {
+                SpawnEnemySoldier2();
+            }
+        }
+
+        public void StopSpawn(int playerIndex)
+        {
+            if (playerIndex==1)
+            {
+                enemyBaseAlive = false;
+                GameManager.Instance.enemyBase = GameManager.Instance.playerBase;
+     
+
+            }
+            if (playerIndex==2)
+            {
+                enemyBaseAlive2 = false;
+                GameManager.Instance.enemyBase2 = GameManager.Instance.playerBase;
+
+            }
+        }
         public void LevelUp(float bonusSpawnRateValue)
         {
             spawnRateTimePlayer -= spawnRateTimePlayer * bonusSpawnRateValue / 100;
